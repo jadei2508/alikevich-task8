@@ -8,14 +8,44 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    var width: CGFloat {
+        UIScreen.main.bounds.size.width * 0.25
+    }
+    
+    var height: CGFloat {
+        UIScreen.main.bounds.size.height * 0.25
+    }
+    
+    @State private var yOffset: CGFloat = 0.2
+    @State var soundValue: Double = 0.5
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        ZStack(alignment: .center) {
+            Image("icon")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .edgesIgnoringSafeArea(.all)
+                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                .background(Color.clear)
+            let view = Rectangle()
+                .frame(width: width, height: height)
+                .background(.ultraThinMaterial)
+                .cornerRadius(15)
+            view.overlay(alignment: .bottom) {
+                let view = Rectangle()
+                view
+                    .scaleEffect(y: yOffset, anchor: .bottom)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                yOffset = max(min((1 - value.location.y / height), height), 0)
+                            }
+                    )
+            }
         }
-        .padding()
     }
 }
 
